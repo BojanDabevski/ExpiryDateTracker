@@ -1,4 +1,4 @@
-# expiry_date_tracker
+# ExpiryDateTracker
 
 A new Flutter project.
 
