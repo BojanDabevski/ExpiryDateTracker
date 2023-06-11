@@ -7,16 +7,16 @@ import './models/Product.dart';
 
 import './utils.dart';
 
-class TableEventsExample extends StatefulWidget {
+class Calendar extends StatefulWidget {
   final List<Product> products;
-  const TableEventsExample(this.products);
+  const Calendar(this.products);
 
   @override
-  _TableEventsExampleState createState() => _TableEventsExampleState(this.products);
+  _CalendarState createState() => _CalendarState(this.products);
 }
 
-class _TableEventsExampleState extends State<TableEventsExample> {
-  List<Product> exams;
+class _CalendarState extends State<Calendar> {
+  List<Product> products;
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
@@ -26,7 +26,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
   DateTime? _rangeEnd;
   bool eventsCreated = false;
 
-  _TableEventsExampleState(this.exams);
+  _CalendarState(this.products);
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
     // Implementation example
     // return kEvents[day] ?? [];
     List<Event> events = [];
-    this.exams.forEach((item) => {
+    this.products.forEach((item) => {
       if (item.date?.year == day.year && item.date?.month == day.month && item.date?.day == day.day)
         {
           events.add(new Event(item.name! + " | " + item.time!.format(context)))

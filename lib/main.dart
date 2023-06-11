@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'camera.dart';
 import 'models/Product.dart';
 import 'calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'camera_page.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -224,7 +226,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ],
                             ),
-                          ),
+                          ),//tuka treba da dodaedes za slikata
+                          Padding(
+                              padding: EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => Camera()),
+                                ),
+                                child: const Text('Camera'),
+                              )),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: ElevatedButton(
@@ -260,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                             onPressed: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => TableEventsExample(this.products)),
+                              MaterialPageRoute(builder: (_) => Calendar(this.products)),
                             ),
                             child: const Text('Products calendar'),
                           )))),

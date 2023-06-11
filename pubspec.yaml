@@ -40,6 +40,10 @@ dependencies:
   localstorage: ^4.0.0+1
   shared_preferences: ^2.0.15
   flutter_local_notifications: ^9.9.1
+  image_picker: ^0.8.4+8
+  camera: ^0.9.4+11
+  path_provider:
+  path:
 
 dev_dependencies:
   flutter_test:
