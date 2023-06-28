@@ -1,3 +1,4 @@
+import 'package:expiry_date_tracker/views/home.dart';
 import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'models/Product.dart';
@@ -266,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Center(
-                      child: Padding(
+                      child: Container(
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () => Navigator.push(
@@ -278,7 +279,19 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Center(
-                      child: Padding(
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => Home()),
+                            ),
+                            child: const Text('Explore recipe'),
+                          )))),
+              Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Center(
+                      child: Container(
                           padding: EdgeInsets.all(5),
                           child: ElevatedButton(
                             onPressed: () => setState(() => {
@@ -294,6 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: EdgeInsets.all(5),
                           child:  Text('Current Time: ${currentDate}'),
                           ))),
+
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
