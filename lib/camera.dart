@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'camera_page.dart';
+import 'views/camera_page.dart';
 
 class Camera extends StatefulWidget {
   const Camera({Key? key}) : super(key: key);

@@ -1,19 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:expiry_date_tracker/models/recipe_model.dart';
+import 'package:expiry_date_tracker/views/recipe_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class CheckRecipe extends StatefulWidget {
+  const CheckRecipe({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<CheckRecipe> createState() => _CheckRecipeState();
 }
 
-class _HomeState extends State<Home> {
+class _CheckRecipeState extends State<CheckRecipe> {
 
   List<RecipeModel> recipes = <RecipeModel>[];
   TextEditingController textEditingController = new TextEditingController();
@@ -29,7 +31,7 @@ class _HomeState extends State<Home> {
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     jsonData["hits"].forEach((element) {
       print(element.toString());
-      RecipeModel recipeModel = new RecipeModel();
+      RecipeModel recipeModel = new RecipeModel(image: '', label: '', source:'',url: '');
       recipeModel = RecipeModel.fromMap(element["recipe"]);
       recipes.add(recipeModel);
     });
@@ -118,6 +120,25 @@ class _HomeState extends State<Home> {
                       )
                       ],
                     ),
+                ),
+                SizedBox(height: 30,),
+                Container(
+                  child: GridView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200, mainAxisSpacing: 10.0
+                      ),
+                    children: List.generate(recipes.length, (index)  {
+                      return GridTile(
+                        child: RecipieTile(
+                        title: recipes[index].label,
+                        desc: recipes[index].source,
+                        imgUrl: recipes[index].image,
+                        url: recipes[index].url,
+                        ));
+                    }),
+                  ),
                 )
               ],
             ),
@@ -127,3 +148,90 @@ class _HomeState extends State<Home> {
     );
   }
 }
+class RecipieTile extends StatefulWidget {
+  final String title, desc, imgUrl, url;
+
+  RecipieTile({required this.title, required this.desc, required this.imgUrl, required this.url});
+
+  @override
+  _RecipieTileState createState() => _RecipieTileState();
+}
+
+class _RecipieTileState extends State<RecipieTile> {
+  _launchURL(String url) async {
+    print(url);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            if (kIsWeb) {
+              _launchURL(widget.url);
+            } else {
+              print(widget.url + " this is what we are going to see");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RecipeView(
+                        postUrl: widget.url,
+                      )));
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.all(8),
+            child: Stack(
+              children: <Widget>[
+                Image.network(
+                  widget.imgUrl,
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  width: 200,
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Colors.white30, Colors.white],
+                          begin: FractionalOffset.centerRight,
+                          end: FractionalOffset.centerLeft)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.title,
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                              ),
+                        ),
+                        Text(
+                          widget.desc,
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.black54,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+

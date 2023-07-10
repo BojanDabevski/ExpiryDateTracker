@@ -1,4 +1,5 @@
 import 'package:expiry_date_tracker/views/home.dart';
+import 'package:expiry_date_tracker/views/location_page.dart';
 import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'models/Product.dart';
@@ -6,7 +7,7 @@ import 'calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'camera_page.dart';
+import 'views/camera_page.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -284,9 +285,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                             onPressed: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => Home()),
+                              MaterialPageRoute(builder: (_) => CheckRecipe()),
                             ),
                             child: const Text('Explore recipe'),
+                          )))),
+              Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Center(
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => LocationPage()),
+                            ),
+                            child: const Text('GetLocation'),
                           )))),
               Padding(
                   padding: EdgeInsets.all(15),

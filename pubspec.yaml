@@ -45,6 +45,10 @@ dependencies:
   path_provider:
   path:
   http:
+  geocoding: ^2.0.4
+  geolocator: ^8.2.0
+  webview_flutter:
+  url_launcher: 6.0.0
 
 dev_dependencies:
   flutter_test:
