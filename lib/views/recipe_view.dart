@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -50,9 +49,7 @@ class _RecipeViewState extends State<RecipeView> {
                         begin: FractionalOffset.topRight,
                         end: FractionalOffset.bottomLeft)),
                 child:  Row(
-                  mainAxisAlignment: kIsWeb
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
+                  mainAxisAlignment: kIsWeb ? MainAxisAlignment.start : MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       "ExpiryDateTracker",
@@ -68,11 +65,11 @@ class _RecipeViewState extends State<RecipeView> {
                     )
                   ],
                 ),
-              // ),
+              ),
               // Container(
               //   height: MediaQuery.of(context).size.height - (Platform.isIOS ? 104 : 30),
               //   width: MediaQuery.of(context).size.width,
-              //   child: WebView(
+              //   child: WebViewWidget(
               //     onPageFinished: (val){
               //       print(val);
               //     },
@@ -84,7 +81,7 @@ class _RecipeViewState extends State<RecipeView> {
               //       });
               //     },
               //   ),
-              ),
+              // ),
             ],
           ),
         )

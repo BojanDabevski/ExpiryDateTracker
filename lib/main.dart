@@ -1,5 +1,7 @@
 import 'package:expiry_date_tracker/views/home.dart';
 import 'package:expiry_date_tracker/views/location_page.dart';
+import 'package:expiry_date_tracker/views/proba.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'models/Product.dart';
@@ -53,6 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _inputKey = GlobalKey<FormState>();
   final _messangerKey = GlobalKey<ScaffoldMessengerState>();
+  //
+  // final cameras = availableCameras();
+  //
+  // // Get a specific camera from the list of available cameras.
+  // final firstCamera = cameras.first;
 
   String? name = "";
   String? username = "";
@@ -232,11 +239,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           Padding(
                               padding: EdgeInsets.all(5),
                               child: ElevatedButton(
-                                onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => Camera()),
-                                ),
-                                child: const Text('Camera'),
+                                onPressed: () async {
+                                  await availableCameras().then((value) => Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+                                },
+                                child: const Text("Take a Picture"),
                               )),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
