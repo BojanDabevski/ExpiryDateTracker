@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -6,15 +7,20 @@ class Product {
   String? name;
   DateTime? date;
   TimeOfDay? time;
+  String? image;
 
-  Product({this.name, this.date, this.time});
+  Product({this.name, this.date, this.time, this.image});
 
   factory Product.fromJson(Map<String, dynamic> jsonData) {
-    return Product(name: jsonData['name'], date: jsonData['date'] == null ? null : DateTime.parse(jsonData['date']), time: jsonData['time'] == null ? null : TimeOfDay(hour: int.parse(jsonData['time'].split(":")[0]), minute: int.parse(jsonData['time'].split(":")[1].split(" ")[0])));
+    return Product(name: jsonData['name'],
+        image: jsonData['image'],
+        date: jsonData['date'] == null ? null : DateTime.parse(jsonData['date']),
+        time: jsonData['time'] == null ? null : TimeOfDay(hour: int.parse(jsonData['time'].split(":")[0]), minute: int.parse(jsonData['time'].split(":")[1].split(" ")[0])));
   }
 
   static Map<String, dynamic> toMap(Product product) => {
     'name': product.name,
+    'image': product.image,
     'date': product.date == null ? null : product.date?.toIso8601String(),
     'time': product.time == null ? null : formatTimeOfDay(product.time!)
   };

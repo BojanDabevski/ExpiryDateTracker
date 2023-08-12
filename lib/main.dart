@@ -1,7 +1,7 @@
-import 'package:expiry_date_tracker/views/home.dart';
-import 'package:expiry_date_tracker/views/location_page.dart';
-import 'package:expiry_date_tracker/views/proba.dart';
 import 'package:camera/camera.dart';
+import 'package:expiry_date_tracker/views/preview_page.dart';
+import 'package:expiry_date_tracker/views/recipe.dart';
+import 'package:expiry_date_tracker/views/location_page.dart';
 import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'models/Product.dart';
@@ -15,7 +15,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
 
   final AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('expiry_date_tracker_logo');
 
@@ -55,12 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _inputKey = GlobalKey<FormState>();
   final _messangerKey = GlobalKey<ScaffoldMessengerState>();
-  //
-  // final cameras = availableCameras();
-  //
-  // // Get a specific camera from the list of available cameras.
-  // final firstCamera = cameras.first;
 
+  String? imagePath ="";
+  XFile? picture;
   String? name = "";
   String? username = "";
   String? password = "";
@@ -90,6 +86,28 @@ class _MyHomePageState extends State<MyHomePage> {
     txt.dispose();
     user.dispose();
     super.dispose();
+  }
+  
+  Future<void> _selectPicture(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await availableCameras().then((value) => Navigator.push(context,
+        MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+
+    // When a BuildContext is used from a StatefulWidget, the mounted property
+    // must be checked after an asynchronous gap.
+    if (!mounted) return;
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$result')));
+
+    if (result != null &&  result!=imagePath)
+      setState(() {
+        imagePath = result;
+      });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -235,16 +253,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ],
                             ),
-                          ),//tuka treba da dodaedes za slikata
+                          ),
+                          // Padding(
+                          //     padding: EdgeInsets.all(5),
+                          //     child: ElevatedButton(
+                          //       onPressed: () async {
+                          //         await availableCameras().then((value) => Navigator.push(context,
+                          //             MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+                          //       },
+                          //       child: const Text("Take a Picture"),
+                          //     )),
                           Padding(
-                              padding: EdgeInsets.all(5),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  await availableCameras().then((value) => Navigator.push(context,
-                                      MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
-                                },
-                                child: const Text("Take a Picture"),
-                              )),
+                            padding: EdgeInsets.all(1),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () => _selectPicture(context),
+                                  child: Text('Take a Picture'),
+                                ),
+                              ],
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: ElevatedButton(
@@ -252,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 if (_inputKey.currentState!.validate()) {
                                   name = txt.text;
                                   currentDate = new DateTime(currentDate.year, currentDate.month, currentDate.day, selectedTime.hour, selectedTime.minute);
-                                  Product obj = new Product(name: name!, date: currentDate, time: selectedTime);
+                                  Product obj = new Product(name: name!, date: currentDate, time: selectedTime,image: imagePath);
                                   scheduler(obj);
                                   products.add(obj);
                                   _set(username!, products);
@@ -273,55 +303,82 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     )),
               Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(5),
                   child: Center(
-                      child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => Calendar(this.products)),
-                            ),
-                            child: const Text('Products calendar'),
-                          )))),
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child:  Text('Welcome to ExpiryDateTracker'),
+                      ))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(width: 50,),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => Calendar(this.products)),
+                                ),
+                                child: const Text('Products calendar'),
+                              )))),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => CheckRecipe()),
+                                ),
+                                child: const Text('Explore recipe'),
+                              )))),
+
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(width: 60,),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => LocationPage()),
+                                ),
+                                child: const Text('GetLocation'),
+                              )))),
+                  SizedBox(width: 50,),
+                  Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              width: 100,
+                              child: SizedBox(
+                                width: 5000,
+                                child: ElevatedButton(
+                                  onPressed: () => setState(() => {
+                                    username = "",
+                                    isLoggedIn = false
+                                  }),
+                                  child: const Text('Logout'),
+                                ),
+                              )))),
+                ],
+              ),
               Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Center(
-                      child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => CheckRecipe()),
-                            ),
-                            child: const Text('Explore recipe'),
-                          )))),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Center(
-                      child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => LocationPage()),
-                            ),
-                            child: const Text('GetLocation'),
-                          )))),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Center(
-                      child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: ElevatedButton(
-                            onPressed: () => setState(() => {
-                              username = "",
-                              isLoggedIn = false
-                            }),
-                            child: const Text('Logout'),
-                          )))),
-              Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(5),
                   child: Center(
                       child: Padding(
                           padding: EdgeInsets.all(5),
@@ -342,7 +399,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         margin: EdgeInsets.all(18),
                         child: Column(children: [
                           Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].name.toString(), style: TextStyle(fontWeight: FontWeight.bold))),
-                          Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].date.toString().split(" ")[0] + " " + products[index].time!.format(context), style:  TextStyle(color: Colors.grey))),
+                          Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].date.toString().split(" ")[0] + " " + products[index].time!.format(context) + " " + products[index].image.toString(), style:  TextStyle(color: Colors.grey))),
+                          // ElevatedButton(onPressed: () async {
+                          //   MaterialPageRoute(builder: (_) => PreviewPage(picture: picture) )
+                          // }, child: child)
                         ]),
                       ),
                     ),
@@ -425,6 +485,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var dayBefore = product.date?.subtract(const Duration(days: 1));
 
-    await flutterLocalNotificationsPlugin.schedule(0, 'Product', product.name, dayBefore!, platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(0, 'The product will expire tomorrow', product.name, dayBefore!, platformChannelSpecifics);
   }
 }
