@@ -10,15 +10,12 @@ class PreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Preview Page')),
+      appBar: AppBar(title: const Text('Preview of your picture')),
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Image.file(File(picture.path), fit: BoxFit.cover, width: 250),
           const SizedBox(height: 24),
-          Text(picture.name),
-          // ElevatedButton(onPressed: () {
-          // Navigator.pop(context, 'Nope.');
-          // }, child: const)
+          Text(picture.name)
         ]),
       ),
     );

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:expiry_date_tracker/models/recipe_model.dart';
+import 'package:expiry_date_tracker/models/recipe.dart';
 // import 'package:expiry_date_tracker/views/recipe_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';

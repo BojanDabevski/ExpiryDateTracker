@@ -7,7 +7,7 @@ class Product {
   String? name;
   DateTime? date;
   TimeOfDay? time;
-  String? image;
+  XFile? image;
 
   Product({this.name, this.date, this.time, this.image});
 

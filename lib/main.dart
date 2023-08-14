@@ -1,11 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:expiry_date_tracker/views/preview_page.dart';
-import 'package:expiry_date_tracker/views/recipe.dart';
+import 'package:expiry_date_tracker/views/recipe_page.dart';
 import 'package:expiry_date_tracker/views/location_page.dart';
 import 'package:flutter/material.dart';
-import 'camera.dart';
 import 'models/Product.dart';
-import 'calendar.dart';
+import 'views/calendar_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -41,7 +40,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  // This widget is the root of your application.
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -55,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final _inputKey = GlobalKey<FormState>();
   final _messangerKey = GlobalKey<ScaffoldMessengerState>();
 
-  String? imagePath ="";
   XFile? picture;
   String? name = "";
   String? username = "";
@@ -89,24 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   
   Future<void> _selectPicture(BuildContext context) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
+
     final result = await availableCameras().then((value) => Navigator.push(context,
         MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
 
-    // When a BuildContext is used from a StatefulWidget, the mounted property
-    // must be checked after an asynchronous gap.
     if (!mounted) return;
 
-    // After the Selection Screen returns a result, hide any previous snackbars
-    // and show the new result.
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text('$result')));
 
-    if (result != null &&  result!=imagePath)
+    if (result != null &&  result!=picture)
       setState(() {
-        imagePath = result;
+        picture = result;
       });
   }
 
@@ -254,15 +246,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               ],
                             ),
                           ),
-                          // Padding(
-                          //     padding: EdgeInsets.all(5),
-                          //     child: ElevatedButton(
-                          //       onPressed: () async {
-                          //         await availableCameras().then((value) => Navigator.push(context,
-                          //             MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
-                          //       },
-                          //       child: const Text("Take a Picture"),
-                          //     )),
                           Padding(
                             padding: EdgeInsets.all(1),
                             child: Row(
@@ -282,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 if (_inputKey.currentState!.validate()) {
                                   name = txt.text;
                                   currentDate = new DateTime(currentDate.year, currentDate.month, currentDate.day, selectedTime.hour, selectedTime.minute);
-                                  Product obj = new Product(name: name!, date: currentDate, time: selectedTime,image: imagePath);
+                                  Product obj = new Product(name: name!, date: currentDate, time: selectedTime, image: picture);
                                   scheduler(obj);
                                   products.add(obj);
                                   _set(username!, products);
@@ -307,7 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Center(
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child:  Text('Welcome to ExpiryDateTracker'),
+                        child:  Text('Welcome '+ username.toString() +' to ExpiryDateTracker'),
                       ))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -334,11 +317,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: ElevatedButton(
                                 onPressed: () => Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => CheckRecipe()),
+                                  MaterialPageRoute(builder: (_) => LocationPage()),
                                 ),
-                                child: const Text('Explore recipe'),
+                                child: const Text('GetLocation'),
                               )))),
-
                 ],
               ),
               Row(
@@ -354,11 +336,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: ElevatedButton(
                                 onPressed: () => Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => LocationPage()),
+                                  MaterialPageRoute(builder: (_) => CheckRecipe()),
                                 ),
-                                child: const Text('GetLocation'),
+                                child: const Text('Explore recipe'),
                               )))),
-                  SizedBox(width: 50,),
+                  SizedBox(width: 30,),
                   Padding(
                       padding: EdgeInsets.all(5),
                       child: Center(
@@ -399,10 +381,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         margin: EdgeInsets.all(18),
                         child: Column(children: [
                           Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].name.toString(), style: TextStyle(fontWeight: FontWeight.bold))),
-                          Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].date.toString().split(" ")[0] + " " + products[index].time!.format(context) + " " + products[index].image.toString(), style:  TextStyle(color: Colors.grey))),
-                          // ElevatedButton(onPressed: () async {
-                          //   MaterialPageRoute(builder: (_) => PreviewPage(picture: picture) )
-                          // }, child: child)
+                          Container(padding: EdgeInsets.all(5), margin: EdgeInsets.all(5), child: Text(products[index].date.toString().split(" ")[0] + " " + products[index].time!.format(context) + " " + products[index].image!.name, style:  TextStyle(color: Colors.grey))),
+                          ElevatedButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => PreviewPage(picture: products[index].image!)),
+                            ),
+                            child: const Text('See Picture'),
+                          )
                         ]),
                       ),
                     ),
@@ -418,6 +404,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Padding(padding: EdgeInsets.all(15),
+                  // child: Image.asset(
+                  //         'assets/images/logo.png',
+                  //         fit: BoxFit.contain,
+                  //         height: 100,
+                  //       ),),
+
                   Padding(
                       padding: EdgeInsets.all(15),
                       child: TextFormField(

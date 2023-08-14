@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import 'dart:collection';
-
-import './models/Product.dart';
-
-import './utils.dart';
+import '../models/Product.dart';
+import '../models/event.dart';
 
 class Calendar extends StatefulWidget {
   final List<Product> products;
